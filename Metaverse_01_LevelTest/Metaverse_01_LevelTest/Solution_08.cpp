@@ -1,5 +1,7 @@
 // 문제를 파악한 내용 : 배열의 동적 할당, 달팽이 배열의 패턴 파악
 // 해결 아이디어 : way와 wayCount, shellNum이라는 변수들로 제어문에서 제어하여 계산 및 배열 할당 등등
+
+/*
 #include <iostream>
 
 int main()
@@ -72,3 +74,71 @@ int main()
 	}
 	delete[] arr;
 }
+*/
+#pragma region 전지윤코드
+// 전지윤 코드
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+	int num;
+
+	printf("배열의 크기를 입력하시오.\n : ");
+	scanf("%d", &num);
+
+	int arr[100][100] = { 0 };
+	int count = 0;
+	arr[0][0] = count;
+
+	int n = 1, x = 0, y = -1;
+	for (int i = 2 * num; i >= 2; --i)
+	{
+		for (int j = 1; j <= i / 2; ++j)
+		{
+			count++;
+
+			switch (n)
+			{
+			case 1:
+				++y;
+				break;
+			case 2:
+				++x;
+				break;
+			case 3:
+				--y;
+				break;
+			case 4:
+				--x;
+				break;
+			}
+
+			arr[x][y] = count;
+
+		}
+
+		if (n == 4)
+		{
+			n = 1;
+		}
+		else
+		{
+			++n;
+		}
+	}
+
+	// 출력
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = 0; j < num; j++)
+		{
+			printf("\t%d\t", arr[i][j]);
+		}
+		printf("\n");
+	}
+
+}
+#pragma endregion

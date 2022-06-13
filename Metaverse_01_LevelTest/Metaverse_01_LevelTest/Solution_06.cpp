@@ -129,3 +129,107 @@ void CardPrint(int cardNum)
 		break;
 	}
 }
+
+#pragma region 전지윤코드
+// 전지윤 코드
+//#define _CRT_SECURE_NO_WARNINGS
+//
+//#include <stdio.h>
+//#include <time.h>
+//#include <stdlib.h>
+//#include <stdbool.h>
+//
+//void CreatCardDeck(int* pCard);
+//void PrintCardDeck(int num);
+//
+//#define play 14
+//
+//int main()
+//{
+//	srand(time(NULL));
+//
+//	int pCard[play] = { 0 };
+//	//CardArray(pCard);
+//
+//	CreatCardDeck(pCard);
+//
+//	for (int i = 0; i < 14; i++)
+//	{
+//		PrintCardDeck(pCard[i]);
+//		if (i % 7 == 6)
+//			printf("\n");
+//		else
+//			printf(", ");
+//	}
+//}
+//
+//void CreatCardDeck(int* pCard)
+//{
+//	int count = 0;
+//
+//	while (count < 14)
+//	{
+//		bool isNoCard = true;
+//		int randCard = rand() % 53;
+//
+//		for (int i = count; i >= 0; --i)
+//		{
+//			if (pCard[count] == randCard)
+//			{
+//				isNoCard = false;
+//				break;
+//			}
+//		}
+//
+//		if (isNoCard)
+//		{
+//			pCard[count] = randCard;
+//			++count;
+//		}
+//	}
+//}
+//
+//void PrintCardDeck(int num)
+//{
+//	switch (num / 13)
+//	{
+//	case 0:
+//		printf("♠");
+//		break;
+//	case 1:
+//		printf("♣");
+//		break;
+//	case 2:
+//		printf("♥");
+//		break;
+//	case 3:
+//		printf("◆");
+//		break;
+//	case 4:
+//		printf("Joker");
+//		break;
+//	}
+//
+//	if ((num / 13) < 4)
+//	{
+//		switch (num % 13)
+//		{
+//		case 0:
+//			printf("A");
+//			break;
+//		case 10:
+//			printf("J");
+//			break;
+//		case 11:
+//			printf("Q");
+//			break;
+//		case 12:
+//			printf("K");
+//			break;
+//		default:
+//			printf("%d", num % 13 + 1);
+//			break;
+//		}
+//	}
+//}
+#pragma endregion
