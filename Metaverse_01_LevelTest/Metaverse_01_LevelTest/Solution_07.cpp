@@ -5,14 +5,15 @@
 #include <vector>
 #include <cstdlib>
 
-void CreateMap(int* (bingoNum)[5]);
-int BingoCount(int* (bingoNum)[5], int size);
-void PrintMap(int bingoCnt, int* (bingoNum)[5]);
+void CreateMap(int (*bingoNum)[5]);
+int BingoCount(int (*bingoNum)[5], int size);
+void PrintMap(int bingoCnt, int (*bingoNum)[5]);
 
 int main()
 {
-	int* (bingoNum)[5] = { 0 };
+	int bingoNum[5][5] = { 0 };
 	CreateMap(bingoNum);
+	
 	//std::vector<int> v(25);
 	//
 	//for (size_t i = 0; i < 25; i++)
@@ -112,13 +113,14 @@ int main()
 	//	}
 
 	int bingoCnt = 0;
-	while (1)
+	do
 	{
 		bingoCnt = BingoCount(bingoNum, 5);
 
 		PrintMap(bingoCnt, bingoNum);
-	}
+	} while (bingoCnt < 12);
 	
+	std::cout << "12줄의 빙고를 모두 완성하셨습니다." << std::endl;
 	/*std::cout << "현재 " << bingoCnt << "줄의 빙고가 완성되었습니다." << std::endl;
 	std::cout << "숫자를 입력해 주세요 : ";
 
@@ -137,9 +139,10 @@ int main()
 	}
 	system("cls");
 }*/
+	return 0;
 }
 
-void CreateMap(int* (bingoNum)[5])
+void CreateMap(int (*bingoNum)[5])
 {
 	std::vector<int> v(25);
 
@@ -158,10 +161,8 @@ void CreateMap(int* (bingoNum)[5])
 	}
 }
 
-int BingoCount(int* (bingoNum)[5], int size)
+int BingoCount(int (*bingoNum)[5], int size)
 {
-	int bingoCnt = 0;
-
 	for (size_t i = 0; i < size; i++)
 	{
 		for (size_t j = 0; j < size; j++)
@@ -174,11 +175,10 @@ int BingoCount(int* (bingoNum)[5], int size)
 
 	int bingoCnt = 0;
 
+	// 가로의 빙고 카운트
 	for (size_t i = 0; i < size; i++)
 	{
-		// 가로, 세로의 빙고 카운트
 		bool rowBingo = true;
-		bool columnBingo = true;
 		for (size_t j = 0; j < size; j++)
 		{
 			if (bingoNum[i][j] != 0)
@@ -186,60 +186,65 @@ int BingoCount(int* (bingoNum)[5], int size)
 				rowBingo = false;
 				break;
 			}
+		}
+		if (rowBingo)
+		{
+			bingoCnt++;
+		}
+	}
 
+	// 세로의 빙고 카운트
+	for (size_t i = 0; i < size; i++)
+	{
+		bool columnBingo = true;
+		for (size_t j = 0; j < size; j++)
+		{
 			if (bingoNum[j][i] != 0)
 			{
 				columnBingo = false;
 				break;
 			}
 		}
-
-		if (rowBingo)
-		{
-			bingoCnt++;
-		}
 		if (columnBingo)
-		{
-			bingoCnt++;
-		}
-
-		// 왼쪽 위 대각선의 빙고 카운트
-		bool crossBingo = true;
-		for (size_t i = 0; i < size; i++)
-		{
-			if (bingoNum[i][i] != 0)
-			{
-				crossBingo = false;
-				break;
-			}
-		}
-
-		if (crossBingo)
-		{
-			bingoCnt++;
-		}
-
-		// 오른쪽 위 대각선의 빙고 카운트
-		crossBingo = true;
-		for (size_t i = 0; i < size; i++)
-		{
-			if (bingoNum[i][size - i - 1] != 0)
-			{
-				crossBingo = false;
-				break;
-			}
-		}
-
-		if (crossBingo)
 		{
 			bingoCnt++;
 		}
 	}
 
+	// 왼쪽 위 대각선의 빙고 카운트
+	bool crossBingo = true;
+	for (size_t i = 0; i < size; i++)
+	{
+		if (bingoNum[i][i] != 0)
+		{
+			crossBingo = false;
+			break;
+		}
+	}
+	if (crossBingo)
+	{
+		bingoCnt++;
+	}
+
+	// 오른쪽 위 대각선의 빙고 카운트
+	crossBingo = true;
+	for (size_t i = 0; i < size; i++)
+	{
+		if (bingoNum[i][size - 1 - i] != 0)
+		{
+			crossBingo = false;
+			break;
+		}
+	}
+	if (crossBingo)
+	{
+		bingoCnt++;
+	}
+
 	return bingoCnt;
 }
 
-void PrintMap(int bingoCnt, int* (bingoNum)[5])
+void PrintMap(int bingoCnt, int (*bingoNum)[5])
 {
 	std::cout << "현재 " << bingoCnt << "줄의 빙고가 완성되었습니다." << std::endl;
 	std::cout << "숫자를 입력해 주세요 : ";
