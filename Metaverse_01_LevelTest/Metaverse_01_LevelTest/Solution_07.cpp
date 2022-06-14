@@ -113,12 +113,12 @@ int main()
 	//	}
 
 	int bingoCnt = 0;
-	do
+	while (bingoCnt < 10)
 	{
 		bingoCnt = BingoCount(bingoNum, 5);
 
 		PrintMap(bingoCnt, bingoNum);
-	} while (bingoCnt < 12);
+	}
 	
 	std::cout << "12줄의 빙고를 모두 완성하셨습니다." << std::endl;
 	/*std::cout << "현재 " << bingoCnt << "줄의 빙고가 완성되었습니다." << std::endl;
@@ -420,4 +420,156 @@ void PrintMap(int bingoCnt, int (*bingoNum)[5])
 //	printf("%d줄의 빙고를 모두 완성하셨습니다.", bingo);
 //
 //}
+#pragma endregion
+
+#pragma region 전지윤코드 2
+// 전지윤 코드 2
+
+/*
+	[문제를 파악한 내용]
+	- 1 ~ 25 까지 랜덤으로 배치된 5*5 빙고판 생성
+	- 숫자를 입력받으면 그에 대한 숫자가 지워지고, 빙고줄이 완성될 때마다 빙고줄 개수 추가
+	[해결 아이디어]
+	- 빙고판 생성하는 함수 / 빙고 판정하는 함수 / 빙고판 출력하는 함수 / 플레이하는 함수
+	- 1) 생성하는 함수는 초기에 빙고판 생성해주는 함수
+	- 2) 빙고 판정하는 함수 - 가로 판정 / 세로 판정 / 대각선 판정 확인해 빙고줄 반환
+	- 3) 빙고판 콘솔창에 출력
+	- 4) 함수들을 이용해 플레이
+	- 따로 게임 종료하는 조건이 없길래 빙고줄 다 채워야만 멈추도록 설계했습니다 ^^
+*/
+/*
+#define _CRT_SECURE_NO_WARNINGS
+#define MAP_WIDTH	5
+#define MAP_HEIGHT	MAP_WIDTH
+#define MAP_SIZE	(MAP_WIDTH * MAP_HEIGHT)	// 괄호 쳐줘야만 랜덤값이 잘 나옴. 괄호 안쳐주니 rand()와의 나머지연산이 먼저 적용됨
+#define BINGO		(MAP_WIDTH + MAP_HEIGHT + 2)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
+void Create_Map(int(*arr)[MAP_WIDTH]);	// 맵 생성
+int Bingo_Judgment(int(*arr)[MAP_WIDTH]);
+void Print_Map(int(*arr)[MAP_WIDTH]);	//한 턴 지날때 맵 갱신해줌
+void Play_Game();	//게임플레이
+
+int main()
+{
+	Play_Game();
+}
+
+void Create_Map(int(*arr)[MAP_WIDTH])
+{
+	srand(time(NULL));
+
+	int count = 1;
+	int rand_nums[MAP_SIZE] = { 0 };
+
+	while (count <= MAP_SIZE)
+	{
+		int index = rand() % MAP_SIZE;
+
+		if (rand_nums[index] == 0)
+		{
+			rand_nums[index] = count;
+			++count;
+		}
+	}
+
+	count = MAP_SIZE;
+
+	for (int i = 0; i < MAP_HEIGHT; i++)
+	{
+		for (int j = 0; j < MAP_WIDTH; j++)
+		{
+			arr[i][j] = rand_nums[--count];
+		}
+	}
+
+}
+
+void Print_Map(int(*arr)[MAP_WIDTH])
+{
+	for (int i = 0; i < MAP_HEIGHT; i++)
+	{
+		for (int j = 0; j < MAP_WIDTH; j++)
+		{
+			if (arr[i][j] == 0)
+				printf("	");
+			else
+				printf("%d	", arr[i][j]);
+		}
+		printf("\n\n");
+	}
+}
+
+int Bingo_Judgment(int(*arr)[MAP_WIDTH])
+{
+	bool is_bingo[BINGO] = { false };
+	memset(is_bingo, true, sizeof(is_bingo));
+
+	for (int i = 0; i < MAP_HEIGHT; i++)
+	{
+		for (int j = 0; j < MAP_WIDTH; j++)
+		{
+			if (arr[i][j] != 0)					// 가로 판정
+				is_bingo[i] = false;
+			if (arr[j][i] != 0)					// 세로 판정
+				is_bingo[i + MAP_WIDTH] = false;
+
+			if (i == j && arr[i][j] != 0)		// 대각선1 판정
+				is_bingo[BINGO - 1] = false;
+			if (i + j == MAP_WIDTH - 1 && arr[i][j] != 0)	// 대각선2 판정
+				is_bingo[BINGO - 2] = false;
+		}
+	}
+
+	int count_bingo = 0;
+
+	for (int i = 0; i < BINGO; i++)
+	{
+		if (is_bingo[i] == true)
+			++count_bingo;
+	}
+
+	return count_bingo;
+}
+
+void Play_Game()
+{
+	int bingo_map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
+	Create_Map(bingo_map, MAP_HEIGHT, MAP_WIDTH);
+
+	int bingo_count = 0;
+	while (bingo_count < BINGO)
+	{
+		Print_Map(bingo_map);
+
+		int num;
+
+		printf("현재 %d줄의 빙고가 완성되었습니다.\n", bingo_count);
+		printf("숫자를 입력해주세요 : ");
+		scanf("%d", &num);
+
+		for (int i = 0; i < MAP_HEIGHT; i++)
+		{
+			for (int j = 0; j < MAP_WIDTH; j++)
+			{
+				if (num == bingo_map[i][j])
+				{
+					bingo_map[i][j] = 0;
+				}
+			}
+		}
+
+		bingo_count = Bingo_Judgment(bingo_map);
+
+		system("cls");
+	}
+
+	printf("%d줄의 빙고를 모두 완성하셨습니다.", bingo_count);
+
+}
+*/
 #pragma endregion

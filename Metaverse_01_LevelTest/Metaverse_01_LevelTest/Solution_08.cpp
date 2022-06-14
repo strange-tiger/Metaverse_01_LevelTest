@@ -75,70 +75,315 @@ int main()
 	delete[] arr;
 }
 */
+
 #pragma region 전지윤코드
-// 전지윤 코드
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+//// 전지윤 코드
+//#define _CRT_SECURE_NO_WARNINGS
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+//
+//int main()
+//{
+//	int num;
+//
+//	printf("배열의 크기를 입력하시오.\n : ");
+//	scanf("%d", &num);
+//
+//	int arr[100][100] = { 0 };
+//	int count = 0;
+//	arr[0][0] = count;
+//
+//	int n = 1, x = 0, y = -1;
+//	for (int i = 2 * num; i >= 2; --i)
+//	{
+//		for (int j = 1; j <= i / 2; ++j)
+//		{
+//			count++;
+//
+//			switch (n)
+//			{
+//			case 1:
+//				++y;
+//				break;
+//			case 2:
+//				++x;
+//				break;
+//			case 3:
+//				--y;
+//				break;
+//			case 4:
+//				--x;
+//				break;
+//			}
+//
+//			arr[x][y] = count;
+//
+//		}
+//
+//		if (n == 4)
+//		{
+//			n = 1;
+//		}
+//		else
+//		{
+//			++n;
+//		}
+//	}
+//
+//	// 출력
+//	for (int i = 0; i < num; i++)
+//	{
+//		for (int j = 0; j < num; j++)
+//		{
+//			printf("\t%d\t", arr[i][j]);
+//		}
+//		printf("\n");
+//	}
+//
+//}
+#pragma endregion
+
+#pragma region 최선문교수코드
+// 최선문 교수 코드
+// Solution_08 : Answer
+//
+//#include <iostream>
+//#define NOT_VISITED 0
+//
+//using namespace std;
+//
+//int main()
+//{
+//    // 1. 배열 만들기
+//    cout << "배열의 크기를 입력하세요 : ";
+//    int size;
+//    cin >> size;
+//    /*
+//    int** arr = new int* [size];
+//    for (int i = 0; i < size; ++i)
+//    {
+//        arr[i] = new int[size];
+//    }
+//    */
+//    // 위의 할당법에는 문제가 있다. -> 일반적인 2차원 배열은 연속적이지만,
+//    // 이 할당은 연속적으로 할당 되지 않는다.
+//    //
+//    // 문제점
+//    //
+//    // 1. 반환의 불편함
+//    /*
+//    for (int i = 0; i < size; ++i)
+//    {
+//        delete[] arr[i];
+//    }
+//    delete[] arr;
+//    */
+//    // 2. 중요 : 메모리의 파편화
+//    // => 데이터 사이에 빈 공간이 생기고, 그 사이의 공간은 연속적이지 않기에 할당이 어려워진다. 
+//    //
+//    // 그렇기에 되도록 1차원 배열로 동적 할당한다.
+//
+//    int* arr = new int[size * size];
+//    memset(arr, 0, sizeof(int) * size * size);
+//
+//    // 2. 달팽이 배열 세팅
+//    // 2-1. 달팽이 데이터 초기화
+//    int r = 0;
+//    int c = 0;
+//    int footstep = 1;
+//    enum Direction { DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_UP, DIR_MAX };
+//    Direction direction = DIR_RIGHT;
+//
+//    for (int i = 0; i < size * size; ++i)
+//    {
+//        // 2-2 달팽이 움직임 : 발자국을 남긴다.
+//        arr[r * size + c] = footstep;
+//        ++footstep;
+//
+//        // 2-3. 다음 칸으로 이동한다. 이동할 위치를 계산한다.
+//        // Lookup Table
+//        static const int dr[] = { 0, 1, 0, -1 };
+//        static const int dc[] = { 1, 0, -1, 0 };
+//
+//        int nr = r + dr[(int)direction];
+//        int nc = c + dc[(int)direction];
+//
+//        // 위의 네 줄의 코드로 아래의 switch문을 대체한다.
+//        // // 2-3. 다음 칸으로 이동한다.
+//        // switch(direction)
+//        // {
+//        // // 2-3-1. 오른쪽으로 갈 때 => c += 1
+//        // case DIR_RIGHT:
+//        //     c += 1;
+//        //     break;
+//        // // 2-3-2. 밑으로 갈 때 => r += 1
+//        // case DIR_DOWN:
+//        //     r += 1;
+//        //     break;
+//        // // 2-3-3. 왼쪽으로 갈 때 => c -= 1
+//        // case DIR_LEFT:
+//        //     c -= 1;
+//        //     break;
+//        // // 2-3-4. 위로 갈 때 => r -= 1
+//        // case DIR_UP:
+//        //     r -= 1;
+//        //     break;
+//        // }
+//
+//        // 2-4. 이동이 가능한지 판별한다.
+//        // 2-4-1. 벽에 닿았을 때 => r, c의 위치가 [0, size)
+//        // 2-4-2. 이미 지나온 곳일 때 => arr[nr][nc] != 0
+//        if (nr < 0 || nr >= size || nc < 0 || nc >= size
+//            || arr[nr * size + nc] != NOT_VISITED)
+//        {
+//            // 2-5. 이동이 불가능하므로 방향 전환을 한다.
+//            direction = (Direction)((direction + 1) % DIR_MAX);
+//            // DIR_MAX의 쓰임새 : 모듈러를 사용한 UP -> RIGHT 전환
+//
+//            // 2-6. 
+//            nr = r + dr[(int)direction];
+//            nc = c + dc[(int)direction];
+//        }
+//
+//        // 2-7. 이동한다.
+//        r = nr;
+//        c = nc;
+//    }
+//    // 3. 출력
+//    for (int r = 0; r < size; ++r)
+//    {
+//        for (int c = 0; c < size; ++c)
+//        {
+//            cout << arr[r * size + c] << "\t";
+//        }
+//        cout << "\n";
+//    }
+//
+//    delete[] arr;
+//}
+#pragma endregion
+
+#pragma region 모듈화_클래스
+#include <iostream>
+#define NOT_VISITED 0
+
+using namespace std;
+
+class Snail
+{
+public:
+    Snail() = default;
+    Snail(int size)
+    {
+        _size = size;
+    }
+
+    Snail(const Snail& other)
+    {
+        *arr = *other.arr;
+        _size = other._size;
+        r = other.r;
+        c = other.c;
+    }
+    Snail& operator=(const Snail& other)
+    {
+        *arr = *other.arr;
+        _size = other._size;
+        r = other.r;
+        c = other.c;
+    }
+
+    ~Snail()
+    {
+        Clear();
+    }
+
+    void Clear()
+    {
+        delete[] arr;
+        arr = nullptr;
+
+        _size = 0;
+        r = 0;
+        c = 0;
+    }
+    void Make(int size)
+    {
+        _size = size;
+        int footstep = 1;
+        Direction direction = DIR_RIGHT;
+
+        arr = new int[_size * _size];
+        memset(arr, 0, sizeof(int) * _size * _size);
+
+        for (int i = 0; i < _size * _size; ++i)
+        {
+            // 2-2 달팽이 움직임 : 발자국을 남긴다.
+            arr[r * _size + c] = footstep;
+            ++footstep;
+
+            // 2-3. 다음 칸으로 이동한다. 이동할 위치를 계산한다.
+            // Lookup Table
+            static const int dr[] = { 0, 1, 0, -1 };
+            static const int dc[] = { 1, 0, -1, 0 };
+
+            int nr = r + dr[(int)direction];
+            int nc = c + dc[(int)direction];
+
+            // 2-4. 이동이 가능한지 판별한다.
+            // 2-4-1. 벽에 닿았을 때 => r, c의 위치가 [0, size)
+            // 2-4-2. 이미 지나온 곳일 때 => arr[nr][nc] != 0
+            if (nr < 0 || nr >= _size || nc < 0 || nc >= _size
+                || arr[nr * _size + nc] != NOT_VISITED)
+            {
+                // 2-5. 이동이 불가능하므로 방향 전환을 한다.
+                direction = (Direction)((direction + 1) % DIR_MAX);
+                // DIR_MAX의 쓰임새 : 모듈러를 사용한 UP -> RIGHT 전환
+
+                // 2-6. 
+                nr = r + dr[(int)direction];
+                nc = c + dc[(int)direction];
+            }
+
+            // 2-7. 이동한다.
+            r = nr;
+            c = nc;
+        }
+    }
+
+    void Print()
+    {
+        for (int r = 0; r < _size; ++r)
+        {
+            for (int c = 0; c < _size; ++c)
+            {
+                cout << arr[r * _size + c] << "\t";
+            }
+            cout << "\n";
+        }
+    }
+private:
+    int* arr = nullptr;
+    int _size = 0;
+    int r = 0;
+    int c = 0;
+    enum Direction { DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_UP, DIR_MAX };
+};
 
 int main()
 {
-	int num;
+    // 1. 배열 만들기
+    cout << "배열의 크기를 입력하세요 : ";
+    int size;
+    cin >> size;
+    
+    Snail snail;
+    snail.Make(size);
 
-	printf("배열의 크기를 입력하시오.\n : ");
-	scanf("%d", &num);
+    snail.Print();
 
-	int arr[100][100] = { 0 };
-	int count = 0;
-	arr[0][0] = count;
-
-	int n = 1, x = 0, y = -1;
-	for (int i = 2 * num; i >= 2; --i)
-	{
-		for (int j = 1; j <= i / 2; ++j)
-		{
-			count++;
-
-			switch (n)
-			{
-			case 1:
-				++y;
-				break;
-			case 2:
-				++x;
-				break;
-			case 3:
-				--y;
-				break;
-			case 4:
-				--x;
-				break;
-			}
-
-			arr[x][y] = count;
-
-		}
-
-		if (n == 4)
-		{
-			n = 1;
-		}
-		else
-		{
-			++n;
-		}
-	}
-
-	// 출력
-	for (int i = 0; i < num; i++)
-	{
-		for (int j = 0; j < num; j++)
-		{
-			printf("\t%d\t", arr[i][j]);
-		}
-		printf("\n");
-	}
-
+    return 0;
 }
+
 #pragma endregion
