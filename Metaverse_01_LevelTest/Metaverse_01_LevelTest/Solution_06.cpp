@@ -409,10 +409,11 @@ using namespace std;
 // 26 ~ 38 : 하트
 // 38 ~ 51 : 다이아몬드
 // 52 : 조커
-bool isUsedCard[53] = { false };
 
 class Deck
 {
+	static bool isUsedCard[53];	// 정적 데이터는 초기화하지 않으면 초기값이 0이다.
+	static int remainCard;
 public:
 	Deck()
 	{
@@ -430,16 +431,34 @@ public:
 	/// <returns>덱이 성공적으로 구성됐을 경우 true, 아니면 false</returns>
 	bool Make()
 	{
+		if (remainCard < 7)
+		{
+			return false;
+		}
+		for (int i = 0; i < 53; i++)
+		{
+			int count = 0;
+			if (!isUsedCard[i])
+			{
+				count++;
+
+				if (count >= 7)
+				{
+					break;
+				}
+			}
+		}
+		
 		for (int i = 0; i < 7; i++)
 		{
 			int card = 0;
 
-			bool failToMake = true;
+			/*bool failToMake = false;
 			for (int j = 0; j < 53; j++)
 			{
 				if (!isUsedCard[j])
 				{
-					failToMake = false;
+					failToMake = true;
 					break;
 				}
 			}
@@ -447,7 +466,7 @@ public:
 			if (failToMake)
 			{
 				return false;
-			}
+			}*/
 
 			do
 			{
@@ -458,7 +477,7 @@ public:
 			isUsedCard[card] = true;
 		}
 
-		
+		remainCard -= 7;
 		return true;
 	}
 
@@ -501,6 +520,9 @@ private:
 	int _deck[7] = { 0 };
 	int _cardIndex = 0;
 };
+
+bool Deck::isUsedCard[53] = { false };
+int Deck::remainCard = 53;
 
 int main()
 {
