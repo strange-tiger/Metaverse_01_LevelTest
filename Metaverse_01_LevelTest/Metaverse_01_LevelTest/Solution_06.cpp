@@ -394,6 +394,9 @@
 #include <string>
 #include <sstream>
 
+#define DECK_CARD_NUM 7
+#define PLAYER_NUM 8
+
 using namespace std;
 // Deck 타입
 // Make()
@@ -412,8 +415,8 @@ using namespace std;
 
 class Deck
 {
-	static bool isUsedCard[53];	// 정적 데이터는 초기화하지 않으면 초기값이 0이다.
-	static int remainCard;
+	static bool			isUsedCard[54];	// 정적 데이터는 초기화하지 않으면 초기값이 0이다.
+	static int			remainCard;
 public:
 	Deck()
 	{
@@ -431,7 +434,7 @@ public:
 	/// <returns>덱이 성공적으로 구성됐을 경우 true, 아니면 false</returns>
 	bool Make()
 	{
-		if (remainCard < 7)
+		if (remainCard < DECK_CARD_NUM)
 		{
 			return false;
 		}
@@ -442,14 +445,14 @@ public:
 			{
 				count++;
 
-				if (count >= 7)
+				if (count >= DECK_CARD_NUM)
 				{
 					break;
 				}
 			}
 		}
 		
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < DECK_CARD_NUM; i++)
 		{
 			int card = 0;
 
@@ -470,46 +473,55 @@ public:
 
 			do
 			{
-				card = rand() % 53;
+				card = rand() % 53 + 1;
 			} while (isUsedCard[card]);
 
 			_deck[i] = card;
 			isUsedCard[card] = true;
 		}
 
-		remainCard -= 7;
+		remainCard -= DECK_CARD_NUM;
 		return true;
 	}
 
 	string ToString()
 	{
-		stringstream _ss;
-
-		int cardType = _cardIndex / 13;
-		int cardNumber = _cardIndex % 13;
+		// stringstream _ss;
+		string result;
 
 		// Lookup Table
-		static const string CARD_TYPE[] = { "♠", "♣", "♥", "◆" };
-		static const string CARD_NUMBER[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+		const string	CARD_TYPE[4] = { "♠", "♣", "♥", "◆" };
+		const string	CARD_NUMBER[13] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 
-		/*string result = CARD_TYPE[cardType];*/
 
+		int cardType	= _cardIndex / 13;
+		int cardNumber	= _cardIndex % 13;
 		if (cardType == 4)
 		{
-			_ss << "Joker";
+			// _ss << "Joker";
+			result += "Joker";
 		}
 		else
 		{
-			_ss << CARD_TYPE[cardType] + CARD_NUMBER[cardNumber];
+			// _ss << CARD_TYPE[cardType] + CARD_NUMBER[cardNumber];
+			result += CARD_TYPE[cardType] + CARD_NUMBER[cardNumber];
 		}
 		
-		return _ss.str();
+		// return _ss.str();
+		return result;
 	}
 
 	void Print()
 	{
-		for (int i = 0; i < 7; ++i)
+		for (int i = 0; i < DECK_CARD_NUM; ++i)
 		{
+
+			if (_deck[0] == 0)
+			{
+				cout << "The deck is empty" << endl;
+				return;
+			}
+
 			_cardIndex = _deck[i];
 			cout << ToString() << " ";
 		}
@@ -517,26 +529,23 @@ public:
 	}
 
 private:
-	int _deck[7] = { 0 };
-	int _cardIndex = 0;
+	int			_deck[DECK_CARD_NUM] = { 0 };
+	int			_cardIndex = 0;
 };
 
-bool Deck::isUsedCard[53] = { false };
-int Deck::remainCard = 53;
+bool			Deck::isUsedCard[54] = { false };
+int				Deck::remainCard = 53;
 
 int main()
 {
-	Deck player1Deck;
-	if (player1Deck.Make())
+	Deck playerDeck[PLAYER_NUM];
+	
+	for (int i = 0; i < PLAYER_NUM; i++)
 	{
-		player1Deck.Print();
+		playerDeck[i].Make();
+		playerDeck[i].Print();
 	}
-	Deck player2Deck;
-	if (player2Deck.Make())
-	{
-		player2Deck.Print();
-	}
-
+	
 	return 0;
 }
 
