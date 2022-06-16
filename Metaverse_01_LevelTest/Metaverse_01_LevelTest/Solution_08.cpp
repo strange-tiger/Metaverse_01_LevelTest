@@ -265,110 +265,183 @@ int main()
 #pragma endregion
 
 #pragma region 모듈화_클래스
+//#include <iostream>
+//
+//using namespace std;
+//
+//class SnailArr
+//{
+//    static const int NOT_VISITED = 0;
+//public:
+//    SnailArr() = default;
+//    SnailArr(int size)
+//    {
+//        _size = size;
+//    }
+//
+//    SnailArr(const SnailArr& other)
+//    {
+//        *_arr = *other._arr;
+//        _size = other._size;
+//        _r = other._r;
+//        _c = other._c;
+//    }
+//    SnailArr& operator=(const SnailArr& other)
+//    {
+//        *_arr = *other._arr;
+//        _size = other._size;
+//        _r = other._r;
+//        _c = other._c;
+//    }
+//
+//    ~SnailArr()
+//    {
+//        Clear();
+//    }
+//
+//    void Clear()
+//    {
+//        delete[] _arr;
+//        _arr = nullptr;
+//
+//        _size = 0;
+//        _r = 0;
+//        _c = 0;
+//    }
+//    void Make(int size)
+//    {
+//        size = size;
+//        int footstep = 1;
+//        Direction direction = DIR_RIGHT;
+//
+//        _arr = new int[size * size];
+//        memset(_arr, 0, sizeof(int) * size * size);
+//
+//        for (int i = 0; i < size * size; ++i)
+//        {
+//            // 2-2 달팽이 움직임 : 발자국을 남긴다.
+//            _arr[_r * size + _c] = footstep;
+//            ++footstep;
+//
+//            // 2-3. 다음 칸으로 이동한다. 이동할 위치를 계산한다.
+//            // Lookup Table
+//            static const int dr[] = { 0, 1, 0, -1 };
+//            static const int dc[] = { 1, 0, -1, 0 };
+//
+//            int nr = _r + dr[(int)direction];
+//            int nc = _c + dc[(int)direction];
+//
+//            // 2-4. 이동이 가능한지 판별한다.
+//            // 2-4-1. 벽에 닿았을 때 => r, c의 위치가 [0, size)
+//            // 2-4-2. 이미 지나온 곳일 때 => arr[nr][nc] != 0
+//            if (nr < 0 || nr >= size || nc < 0 || nc >= size
+//                || _arr[nr * size + nc] != NOT_VISITED)
+//            {
+//                // 2-5. 이동이 불가능하므로 방향 전환을 한다.
+//                direction = (Direction)((direction + 1) % DIR_MAX);
+//                // DIR_MAX의 쓰임새 : 모듈러를 사용한 UP -> RIGHT 전환
+//
+//                // 2-6. 
+//                nr = _r + dr[(int)direction];
+//                nc = _c + dc[(int)direction];
+//            }
+//
+//            // 2-7. 이동한다.
+//            _r = nr;
+//            _c = nc;
+//        }
+//    }
+//
+//    void Print()
+//    {
+//        for (int r = 0; r < _size; ++r)
+//        {
+//            for (int c = 0; c < _size; ++c)
+//            {
+//                cout << _arr[r * _size + c] << "\t";
+//            }
+//            cout << "\n";
+//        }
+//    }
+//private:
+//    int* _arr = nullptr;
+//    int _size = 0;
+//    int _r = 0;
+//    int _c = 0;
+//    enum Direction { DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_UP, DIR_MAX };
+//};
+//
+//int main()
+//{
+//    // 1. 배열 만들기
+//    cout << "배열의 크기를 입력하세요 : ";
+//    int size;
+//    cin >> size;
+//    
+//    SnailArr snailArr;
+//    snailArr.Make(size);
+//
+//    snailArr.Print();
+//
+//    return 0;
+//}
+
+#pragma endregion
+
+#pragma region 최선문교수_모듈화
 #include <iostream>
-#define NOT_VISITED 0
 
 using namespace std;
 
 class Snail
 {
+    static const int NOT_VISITED = 0;
+    enum Direction { DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_UP, DIR_MAX };
 public:
-    Snail() = default;
-    Snail(int size)
+    void MoveOn(int* ground, int size)
     {
-        _size = size;
-    }
+        int _footstep = 1;
 
-    Snail(const Snail& other)
-    {
-        *arr = *other.arr;
-        _size = other._size;
-        r = other.r;
-        c = other.c;
-    }
-    Snail& operator=(const Snail& other)
-    {
-        *arr = *other.arr;
-        _size = other._size;
-        r = other.r;
-        c = other.c;
-    }
-
-    ~Snail()
-    {
-        Clear();
-    }
-
-    void Clear()
-    {
-        delete[] arr;
-        arr = nullptr;
-
-        _size = 0;
-        r = 0;
-        c = 0;
-    }
-    void Make(int size)
-    {
-        _size = size;
-        int footstep = 1;
-        Direction direction = DIR_RIGHT;
-
-        arr = new int[_size * _size];
-        memset(arr, 0, sizeof(int) * _size * _size);
-
-        for (int i = 0; i < _size * _size; ++i)
+        for (int i = 0; i < size * size; ++i)
         {
             // 2-2 달팽이 움직임 : 발자국을 남긴다.
-            arr[r * _size + c] = footstep;
-            ++footstep;
+            ground[_r * size + _c] = _footstep;
+            ++_footstep;
 
             // 2-3. 다음 칸으로 이동한다. 이동할 위치를 계산한다.
             // Lookup Table
             static const int dr[] = { 0, 1, 0, -1 };
             static const int dc[] = { 1, 0, -1, 0 };
 
-            int nr = r + dr[(int)direction];
-            int nc = c + dc[(int)direction];
+            int nr = _r + dr[(int)_direction];
+            int nc = _c + dc[(int)_direction];
 
             // 2-4. 이동이 가능한지 판별한다.
             // 2-4-1. 벽에 닿았을 때 => r, c의 위치가 [0, size)
             // 2-4-2. 이미 지나온 곳일 때 => arr[nr][nc] != 0
-            if (nr < 0 || nr >= _size || nc < 0 || nc >= _size
-                || arr[nr * _size + nc] != NOT_VISITED)
+            if (nr < 0 || nr >= size || nc < 0 || nc >= size
+                || ground[nr * size + nc] != NOT_VISITED)
             {
                 // 2-5. 이동이 불가능하므로 방향 전환을 한다.
-                direction = (Direction)((direction + 1) % DIR_MAX);
+                _direction = (Direction)((_direction + 1) % DIR_MAX);
                 // DIR_MAX의 쓰임새 : 모듈러를 사용한 UP -> RIGHT 전환
 
                 // 2-6. 
-                nr = r + dr[(int)direction];
-                nc = c + dc[(int)direction];
+                nr = _r + dr[(int)_direction];
+                nc = _c + dc[(int)_direction];
             }
 
             // 2-7. 이동한다.
-            r = nr;
-            c = nc;
+            _r = nr;
+            _c = nc;
         }
     }
 
-    void Print()
-    {
-        for (int r = 0; r < _size; ++r)
-        {
-            for (int c = 0; c < _size; ++c)
-            {
-                cout << arr[r * _size + c] << "\t";
-            }
-            cout << "\n";
-        }
-    }
 private:
-    int* arr = nullptr;
-    int _size = 0;
-    int r = 0;
-    int c = 0;
-    enum Direction { DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_UP, DIR_MAX };
+    int _footstep = 0;
+    int _r = 0;
+    int _c = 0;
+    Direction _direction = DIR_RIGHT;
 };
 
 int main()
@@ -377,11 +450,23 @@ int main()
     cout << "배열의 크기를 입력하세요 : ";
     int size;
     cin >> size;
-    
-    Snail snail;
-    snail.Make(size);
 
-    snail.Print();
+    int* arr = new int[size * size];
+    memset(arr, 0, sizeof(int) * size * size);
+
+    Snail snail;
+    snail.MoveOn(arr, size);
+
+	for (int r = 0; r < size; ++r)
+	{
+		for (int c = 0; c < size; ++c)
+		{
+			cout << arr[r * size + c] << "\t";
+		}
+		cout << "\n";
+	}
+
+	delete[] arr;
 
     return 0;
 }
