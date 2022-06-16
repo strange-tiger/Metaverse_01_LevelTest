@@ -754,27 +754,31 @@ void Play_Game()
 
 using namespace std;
 
-#define BLANK 0
-
-bool isUsed[26] = { false };
-
 class Bingo
 {
-public:
+	static const int BLANK = 0;
+	static const int SIZE = 5;
 
-	void Make()
+public:
+	static const int DOUBLE_SIZE = SIZE * SIZE;
+
+public:
+	void Init()
 	{
-		for (int r = 0; r < 5; ++r)
+		srand(time(nullptr));
+
+		bool isUsed[DOUBLE_SIZE + 1] = { false };
+		for (int r = 0; r < SIZE; ++r)
 		{
-			for (int c = 0; c < 5; ++c)
+			for (int c = 0; c < SIZE; ++c)
 			{
 				int n = 0;
 				do
 				{
-					n = 1 + rand() % 25;
+					n = 1 + rand() % DOUBLE_SIZE;
 				} while (isUsed[n]);
 
-				board[r][c] = n;
+				_board[r][c] = n;
 				isUsed[n] = true;
 			}
 		}
@@ -782,43 +786,48 @@ public:
 
 	void Print()
 	{
-		for (int r = 0; r < 5; ++r)
+		for (int r = 0; r < SIZE; ++r)
 		{
-			for (int c = 0; c < 5; ++c)
+			for (int c = 0; c < SIZE; ++c)
 			{
-				if (board[r][c] == BLANK)
+				if (_board[r][c] == BLANK)
 				{
 					cout << "\t";
 				}
 				else
 				{
-					cout << board[r][c] << "\t";
+					cout << _board[r][c] << "\t";
 				}
 			}
 
 			cout << "\n";
 		}
-		cout << "현재 " << Count << "줄의 빙고가 완성되었습니다\n";
+		cout << "현재 " << _count << "줄의 빙고가 완성되었습니다\n";
 	}
 
-	int Input()
+	bool IsCompleted()
 	{
-		cout << "숫자를 입력해주세요 : ";
-		cin >> _input;
-		
-		return _input;
+		bool isCompleted = !(_count < 2 * SIZE + 2);
+
+		if (isCompleted)
+		{
+			system("cls");
+			Print();
+		}
+
+		return isCompleted;
 	}
 
-	void Update()
+	void Update(int input)
 	{
-		for (int r = 0; r < 5; ++r)
+		for (int r = 0; r < SIZE; ++r)
 		{
 			bool isExit = false;
-			for (int c = 0; c < 5; ++c)
+			for (int c = 0; c < SIZE; ++c)
 			{
-				if (board[r][c] == _input)
+				if (_board[r][c] == input)
 				{
-					board[r][c] = BLANK;
+					_board[r][c] = BLANK;
 					isExit = true;
 
 					break;
@@ -830,19 +839,23 @@ public:
 				break;
 			}
 		}
+
+		// 빙고 개수를 샌다.
+		_count = CountBingo();
 	}
 
-	void SetCount()
+private:
+	int CountBingo() const
 	{
 		// - 가로의 모든 숫자를 지운 것
 		int count = 0;
 
-		for (int r = 0; r < 5; ++r)
+		for (int r = 0; r < SIZE; ++r)
 		{
 			bool isBingo = true;
-			for (int c = 0; c < 5; ++c)
+			for (int c = 0; c < SIZE; ++c)
 			{
-				if (board[r][c] != BLANK)
+				if (_board[r][c] != BLANK)
 				{
 					isBingo = false;
 
@@ -856,12 +869,12 @@ public:
 		}
 
 		// - 세로의 모든 숫자를 지운 것
-		for (int r = 0; r < 5; ++r)
+		for (int r = 0; r < SIZE; ++r)
 		{
 			bool isBingo = true;
-			for (int c = 0; c < 5; ++c)
+			for (int c = 0; c < SIZE; ++c)
 			{
-				if (board[c][r] != BLANK)
+				if (_board[c][r] != BLANK)
 				{
 					isBingo = false;
 
@@ -878,9 +891,9 @@ public:
 		// [0][0] / [1][1] / [2][2] / [3][3] / [4][4]
 		{
 			bool isBingo = true;
-			for (int i = 0; i < 5; ++i)
+			for (int i = 0; i < SIZE; ++i)
 			{
-				if (board[i][i] != BLANK)
+				if (_board[i][i] != BLANK)
 				{
 					isBingo = false;
 					break;
@@ -896,9 +909,9 @@ public:
 		// [0][4] / [1][3] / [2][2] / [3][1] / [4][0]
 		{
 			bool isBingo = true;
-			for (int i = 0; i < 5; ++i)
+			for (int i = 0; i < SIZE; ++i)
 			{
-				if (board[i][4 - i] != BLANK)
+				if (_board[i][4 - i] != BLANK)
 				{
 					isBingo = false;
 
@@ -912,17 +925,12 @@ public:
 			}
 		}
 
-		Count = count;
+		return count;
 	}
 
-	int GetCount()
-	{
-		return Count;
-	}
 private:
-	int board[5][5] = { 0 };
-	int Count = 0;
-	int _input = 0;
+	int _board[SIZE][SIZE] = { 0 };
+	int _count = 0;
 };
 
 int main()
@@ -930,7 +938,7 @@ int main()
 	Bingo bingo;
 
 	// 1. 빙고판 세팅
-	bingo.Make();
+	bingo.Init();
 	
 	do
 	{
@@ -940,24 +948,23 @@ int main()
 		bingo.Print();
 
 		// 3. 사용자 입력 받음
-		int input = bingo.Input();
+		int input;
+		cout << "숫자를 입력해주세요 : ";
+		cin >> input;
 
 		// 3-1. 오입력 처리
-		if (input < 0 || input > 25)
+		if (input < 0 || input > Bingo::DOUBLE_SIZE)
 		{
 			// 2번부터 다시
 			continue;
 		}
 
 		// 4. 빙고판 업데이트
-		bingo.Update();
-
-		// 5. 빙고 개수를 샌다.
-		bingo.SetCount();
+		bingo.Update(input);
 	}
-	while (bingo.GetCount() < 12);
-	// 6. 2번부터 다시 반복한다.
-
+	while (!bingo.IsCompleted()); // false == bingo.IsCompleted()
+	// 5. 2번부터 다시 반복한다.
+		
 	return 0;
 }
 
